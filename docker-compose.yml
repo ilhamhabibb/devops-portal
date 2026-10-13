@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  db:
+    image: mariadb:10.6
+    container_name: portal_db
+    restart: always
+    environment: 
+      MYSQL_ROOT_PASSWORD: rootpassword_rahasia
+      MYSQL_DATABASE: portal_db
+      MYSQL_USER: portal_user
+      MYSQL_PASSWORD: userpassword_rahasia
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - portal_net
+
+  web:
+    image: wordpress:latest
+    container_name: portal_web
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: portal_user
+      WORDPRESS_DB_PASSWORD: userpassword_rahasia
+      WORDPRESS_DB_NAME: portal_db
+    volumes:
+      - web_data:/var/www/html
+    networks:
+      - portal_net
+    depends_on:
+      - db
+volumes:
+  db_data:
+  web_data:
+networks:
+  portal_net:
+    driver: bridge

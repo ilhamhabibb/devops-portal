@@ -1,0 +1,22 @@
+---
+- name: Setup dan konfigurasi server portal devops
+  hosts: local
+  become: yes
+  vars:
+    project_dir: "{{ lookup('env', 'PWD') }}"
+
+  tasks:
+    - name: Pastikan direktori backup ada di server
+      file:
+        path: "{{ project_dir }}/backup"
+        state: directory
+        mode: '0755'
+
+    - name: Berikan izin eksekusi pada skrip backup.sh
+      file:
+        path: "{{ project_dir }}/scripts/backup_db.sh"
+        mode: 'ugo+x'
+
+    - name: pesan sukses konfigurasi server
+      debug:
+        msg: "Ansible berhasil menyiapkan direktori dan izin skrip di : {{ project_dir }}"
